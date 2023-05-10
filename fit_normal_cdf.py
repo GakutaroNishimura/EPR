@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import ROOT
 import time
 import glob
+import statistics as stat
 
 peak = []
 delta_f_list = []
@@ -20,6 +21,7 @@ for i in range(f_file, l_file+1):
 
 #dir_path = "./peak/100-119/"
 dir_path = "./peak/120-129/normal_cdf/"
+#dir_path = "./peak/120-129/"
 
 Nshift = int(len(file_path)/2)
 
@@ -33,9 +35,10 @@ for i in range(Nshift):
         c.cd(1)
         gr_bf = ROOT.TGraphErrors(len(df_bf.time), np.array(df_bf.time), np.array(df_bf.signal), np.array([0.0 for i in range(len(df_bf.time))]), np.array([Noise for i in range(len(df_bf.time))]))
 
-        bf_fit = ROOT.TF1("f", "[3] - gaus(x,[0],[1],[2])*ROOT::Math::normal_cdf(x, [4], [5])", 0.113*10**(-3), 0.131*10**(-3))
+        #bf_fit = ROOT.TF1("f", "[3] - gaus(x,[0],[1],[2])*ROOT::Math::normal_cdf(x, [4], [5])", 0.113*10**(-3), 0.131*10**(-3))
+        bf_fit = ROOT.TF1("f", "[3] - gaus(x,[0],[1],[2])*ROOT::Math::normal_cdf(x, [4], [5])", 0.116*10**(-3), 0.131*10**(-3))
         #bf_fit.SetParameters(0.006587, 1.247*10**(-4), 1.826*10**(-5), 0.005733, 1, -1)
-        bf_fit.SetParameters(0.008505, 1.23*10**(-4), 1.97*10**(-5), 0.008189, 0.002095, -1.338)
+        bf_fit.SetParameters(0.008505, 1.23*10**(-4), 1.97*10**(-5), 0.008189, 0.002095, -10.0)
         gr_bf.Fit(bf_fit, "QR")
         min = bf_fit.GetMinimumX(0.115*10**(-3), 0.131*10**(-3))
         #print(min)
@@ -57,9 +60,9 @@ for i in range(Nshift):
 
         c.cd(2)
         gr_af = ROOT.TGraphErrors(len(df_af.time), np.array(df_af.time), np.array(df_af.signal), np.array([0.0 for i in range(len(df_af.time))]), np.array([Noise for i in range(len(df_af.time))]))
-        af_fit = ROOT.TF1("f", "[3] - gaus(x,[0],[1],[2])*ROOT::Math::normal_cdf(x, [4], [5])", 0.115*10**(-3), 0.133*10**(-3))
+        af_fit = ROOT.TF1("f", "[3] - gaus(x,[0],[1],[2])*ROOT::Math::normal_cdf(x, [4], [5])", 0.118*10**(-3), 0.133*10**(-3))
         #af_fit.SetParameters(0.006587, 1.247*10**(-4), 1.826*10**(-5), 0.005733, 1, -1)
-        af_fit.SetParameters(0.008505, 1.27*10**(-4), 1.97*10**(-5), 0.008189, 0.002795, -3.27)
+        af_fit.SetParameters(0.008505, 1.27*10**(-4), 1.97*10**(-5), 0.008189, 0.002795, 10.0)
         gr_af.Fit(af_fit, "QR")
         min = af_fit.GetMinimumX(0.118*10**(-3), 0.133*10**(-3))
         peak.append(min)
@@ -91,8 +94,8 @@ for i in range(Nshift):
 
         #bf_fit = ROOT.TF1("f", "[3] - gaus(x,[0],[1],[2])*ROOT::Math::normal_cdf(x, [4], [5])", 0.113*10**(-3), 0.131*10**(-3))
         bf_fit = ROOT.TF1("f", "[3] - gaus(x,[0],[1],[2])*ROOT::Math::normal_cdf(x, [4], [5])", 0.116*10**(-3), 0.131*10**(-3))
-        #bf_fit.SetParameters(0.006587, 1.247*10**(-4), 1.826*10**(-5), 0.005733, 1, -1)
-        bf_fit.SetParameters(0.01, 1.24*10**(-4), 1.97*10**(-5), 0.008189, 0.002095, -1.338)
+        bf_fit.SetParameters(0.006587, 1.247*10**(-4), 1.826*10**(-5), 0.005733, 1, -1)
+        #bf_fit.SetParameters(0.01, 1.24*10**(-4), 1.97*10**(-5), 0.008189, 0.002095, -1.338)
         gr_bf.Fit(bf_fit, "QR")
         min = bf_fit.GetMinimumX(0.115*10**(-3), 0.131*10**(-3))
         #print(min)
@@ -133,7 +136,7 @@ for i in range(Nshift):
 
         c.Update()
 
-        time.sleep(10000)
+        #time.sleep(10000)
         c.SaveAs(dir_path + str(2*i) + "-" + str(2*i+1) + ".png")
 
         delta_t = peak[2*i+1]-peak[2*i]
@@ -156,8 +159,11 @@ gr.GetYaxis().CenterTitle(True)
 gr.GetYaxis().SetTitle("EPR freq. shift [Hz]")
 #ROOT.gStyle.SetOptFit(1)
 gr.Draw("AP")
+ROOT.gStyle.SetOptFit(1)
 #c1 = ROOT.gROOT.FindObject("c1")
 c.Draw("same")
 c.SaveAs(dir_path + "EPR_Freq_Shift.png")
-#time.sleep(10000)
+print(stat.mean(delta_f_list))
+print(stat.stdev(delta_f_list))
+
 

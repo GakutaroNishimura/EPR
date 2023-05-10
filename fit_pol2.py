@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import ROOT
 import time
 import glob
+import statistics as stat
 
 peak = []
 delta_f_list = []
@@ -19,7 +20,7 @@ for i in range(f_file, l_file+1):
     file_path.append(path[0])
 
 #dir_path = "./peak/100-119/"
-dir_path = "./peak/120-129/"
+dir_path = "./peak/120-129/pol2/"
 
 Nshift = int(len(file_path)/2)
 
@@ -33,26 +34,7 @@ for i in range(Nshift):
     c.cd(1)
     gr_bf = ROOT.TGraphErrors(len(df_bf.time), np.array(df_bf.time), np.array(df_bf.signal), np.array([0.0 for i in range(len(df_bf.time))]), np.array([Noise for i in range(len(df_bf.time))]))
 
-    #bf_fit = ROOT.TF1("bff", "[0] + [1]*x + gaus(x, [2], [3], [4])", 0.115*10**(-3), 0.13*10**(-3))
-    #bf_fit.SetParameters(1, 1, -0.004, 0.125*10**(-3), 0.0001)
-
-    #bf_fit = ROOT.TF1("bff", "gaus(x, [0], [1], [2])", 0.1*10**(-3), 0.14*10**(-3))
-    #bf_fit.SetParameters(-0.004, 0.125*10**(-3), 0.0001)
-
-    #bf_fit = ROOT.TF1("f", "[3] - gaus(x,[0],[1],[2])", 0.113*10**(-3), 0.129*10**(-3))
-    #bf_fit.SetParameters(0.006587, 0.1247*10**(-3), 1.826*10**(-5), 0.005733)
-
-    #bf_fit = ROOT.TF1("f", "[3] - gaus(x,[0],[1],[2])*ROOT::Math::normal_cdf([4]*x, 1, 0)", 0.113*10**(-3), 0.135*10**(-3))
-    #bf_fit.SetParameters(0.006587, 0.1247*10**(-3), 1.826*10**(-5), 0.005733, 2000)
-
-    #bf_fit = ROOT.TF1("f", "[3] - gaus(x,[0],[1],[2])*ROOT::Math::normal_cdf(x, [4], [5])", 0.113*10**(-3), 0.131*10**(-3))
-    #bf_fit.SetParameters(0.006587, 1.247*10**(-4), 1.826*10**(-5), 0.005733, 1, -1)
-
     bf_fit = ROOT.TF1("f", "pol2", 0.115*10**(-3), 0.13*10**(-3))
-    #bf_fit = ROOT.TF1("f", "pol2", 0.115*10**(-3), 0.132*10**(-3))
-    #bf_fit = ROOT.TF1("f", "[0] + (x)", 0.113*10**(-3), 0.13*10**(-3))
-    #bf_fit.SetParameters(0.1247*10**(-3), 1, -0.001)
-
     gr_bf.Fit(bf_fit, "QR")
     min = bf_fit.GetMinimumX(0.115*10**(-3), 0.13*10**(-3))
     #print(min)
@@ -61,16 +43,11 @@ for i in range(Nshift):
     peak.append(x0)
     #print(peak)
     gr_bf.Draw("AP")
-    #ROOT.gStyle.SetOptFit(1)
-    #c1 = ROOT.gROOT.FindObject("c1")
-    #c1.SetGridx()
-    #c1.SetGridy()
-    #c1.Draw("same")
     ROOT.gStyle.SetOptFit(1)
     c.SetGridx()
     c.SetGridy()
-    c.Draw("same")
-    gr_bf.Draw("same")
+    c.Draw("P")
+    gr_bf.Draw("P")
     c.Update()
 
     c.cd(2)
@@ -85,16 +62,11 @@ for i in range(Nshift):
     peak.append(x0)
     #print(peak)
     gr_af.Draw("AP")
-    #ROOT.gStyle.SetOptFit(1)
-    #c1 = ROOT.gROOT.FindObject("c1")
-    #c1.SetGridx()
-    #c1.SetGridy()
-    #c1.Draw("same")
     ROOT.gStyle.SetOptFit(1)
     c.SetGridx()
     c.SetGridy()
-    c.Draw("same")
-    gr_af.Draw("same")
+    c.Draw("P")
+    gr_af.Draw("P")
     c.Update()
 
     #time.sleep(1000)
@@ -124,5 +96,5 @@ gr.Draw("AP")
 #c1 = ROOT.gROOT.FindObject("c1")
 c.Draw("same")
 c.SaveAs(dir_path + "EPR_Freq_Shift.png")
-time.sleep(10000)
-
+print(stat.mean(delta_f_list))
+print(stat.stdev(delta_f_list))
