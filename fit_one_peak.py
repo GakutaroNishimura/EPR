@@ -1,5 +1,5 @@
 import ROOT
-from ROOT import TMath
+#from ROOT import TMath
 import pandas as pd
 import numpy as np
 import statistics as stat
@@ -16,7 +16,8 @@ dir_path = "./peak/"
 #Save figure or not
 Save = "Save"
 
-df = pd.read_csv("./WaveData/scope_61.csv", names = ["time", "signal", "sync"], skiprows=2)
+#df = pd.read_csv("./WaveData/scope_61.csv", names = ["time", "signal", "sync"], skiprows=2)
+df = pd.read_csv("./WaveData/scope_121.csv", names = ["time", "signal", "sync"], skiprows = 2, skipfooter=1, engine="python")
 
 
 peak = []
@@ -42,8 +43,10 @@ Noise = 0.0001097      # noise for df56-df61 [V]
 # 前ピークを一個ずつフィット.
 Fit_center = 0.000533512052921227-Npeak/2/F_mod
 # create a TGraph with the data
-gr = ROOT.TGraphErrors(len(df.time), np.array(df.time), np.array(df.signal), np.array([0.0 for i in range(len(df.time))]), np.array([Noise for i in range(len(df.time))]))
+#gr = ROOT.TGraphErrors(len(df.time), np.array(df.time), np.array(df.signal), np.array([0.0 for i in range(len(df.time))]), np.array([Noise for i in range(len(df.time))]))
+gr = ROOT.TGraph(len(df.time), np.array(df.time), np.array(df.signal))
 # set the fit function and the fit range
+"""
 def func1(x, p0, a, mean, sigma):
     return p0-a*TMath.Gaus(x, mean, sigma)
 def func2(x, mean, sigma):
@@ -60,9 +63,10 @@ par = [f.GetParameter(k) for k in range(f.GetNpar())]
 par_e = [f.GetParError(k) for k in range(f.GetNpar())]
 peak.append(par[2])
 peak_e.append(par_e[2])
+"""
 if Save == "Save":
     # create a TGraph with the fitted function
-    gr_fit = ROOT.TGraph(1000, np.linspace(Fit_center-Fit_Range, Fit_center+Fit_Range, 1000), np.array([f.Eval(x, *par[1:]) for x in np.linspace(Fit_center-Fit_Range, Fit_center+Fit_Range, 1000)]))
+    #gr_fit = ROOT.TGraph(1000, np.linspace(Fit_center-Fit_Range, Fit_center+Fit_Range, 1000), np.array([f.Eval(x, *par[1:]) for x in np.linspace(Fit_center-Fit_Range, Fit_center+Fit_Range, 1000)]))
     gr.SetMarkerStyle(1)
     gr.SetMarkerSize(2)
     gr.SetName("a")
@@ -70,10 +74,13 @@ if Save == "Save":
     gr.GetXaxis().SetTitle("time [s]")
     gr.GetYaxis().CenterTitle(True)
     gr.GetYaxis().SetTitle("voltage [V]")
-    gr.Draw("AP")
-    gr_fit.Draw("same")
-    gr_fit.SetLineColor(2)
+    gr.SetMarkerStyle(7)
+    gr.Draw("APL")
+    #gr_fit.Draw("same")
+    #gr_fit.SetLineColor(2)
     ROOT.gStyle.SetOptFit(1)    #グラフに統計ボックスを表示.
     c1 = ROOT.gROOT.FindObject("c1")
+    c1.Draw("same")
+    time.sleep(10000)
     #c1.SaveAs(dir_path + "test.pdf")
     c1.SaveAs(dir_path + "test.png")
