@@ -17,7 +17,7 @@ dir_path = "./peak/"
 Save = "Save"
 
 #df = pd.read_csv("./WaveData/scope_61.csv", names = ["time", "signal", "sync"], skiprows=2)
-df = pd.read_csv("./WaveData/scope_121.csv", names = ["time", "signal", "sync"], skiprows = 2, skipfooter=1, engine="python")
+df = pd.read_csv("./WaveData/scope_120.csv", names = ["time", "signal", "sync"], skiprows = 2, skipfooter=1, engine="python")
 
 
 peak = []
