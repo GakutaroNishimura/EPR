@@ -11,10 +11,10 @@ peak = []
 delta_f_list = []
 Noise = 7.037*10**(-6)       # noise for df100-df168 [V]
 
-f_file = 100
-l_file = 119
-#f_file = 120
-#l_file = 129
+#f_file = 100
+#l_file = 119
+f_file = 120
+l_file = 129
 #f_file = 130
 #l_file = 139
 #f_file = 140
@@ -98,7 +98,7 @@ for i in range(Nshift):
     gr_af.Draw("P")
     c.Update()
 
-    #time.sleep(1000)
+    time.sleep(1000)
 
     c.SaveAs(dir_path + str(2*i) + "-" + str(2*i+1) + ".png")
 
