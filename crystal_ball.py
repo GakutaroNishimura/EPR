@@ -10,10 +10,11 @@ import time
 
 argvs = sys.argv
 
-f_file = 120
-l_file = 129
+f_file = 130
+l_file = 139
 
-dir_path = "./peak/120-129/crystal_ball/"
+#dir_path = "./peak/120-129/crystal_ball/"
+dir_path = "./peak/130-139/crystal_ball/"
 
 
 def CrystalBall(x, x0, sigma_left, alpha_left, n_left, 
@@ -58,8 +59,9 @@ for i in range(Nshift):
   df_af = pd.read_csv(file_path[2*i+1], names = ["time", "signal", "sync"], skiprows=2, skipfooter=1, engine="python")
 
   print("start fitting")
-  par, cov = curve_fit(crystal_ball, df_bf.time, df_bf.signal, p0 = (1.24e-04, 1.08390763e-05, 1.12849285e+00, 9.04483335e+01, 2.08097853e-05, 6.07396123e-01, 1.31912331e+02, 2.96644947e-03, 3.20672825e-03))
-  x = np.linspace(0.1*10**(-3), 0.175*10**(-3), 1000)
+  par, cov = curve_fit(crystal_ball, df_bf.time, df_bf.signal, p0 = (-1.24e-04, 1.08390763e-05, 1.12849285e+00, 9.04483335e+01, 2.08097853e-05, 6.07396123e-01, 1.31912331e+02, 2.96644947e-03, 3.20672825e-03))
+  #x = np.linspace(0.1*10**(-3), 0.175*10**(-3), 1000) #120-129
+  x = np.linspace(-0.15*10**(-3), -0.1*10**(-3), 1000) #130-139
   y = crystal_ball(x, par[0], par[1], par[2], par[3], par[4], par[5], par[6], par[7], par[8])
 
   t_bf = par[0]
@@ -79,8 +81,9 @@ for i in range(Nshift):
   plt.savefig(dir_path + str(2*i) + ".png")
   print("fig saved")
 
-  par, cov = curve_fit(crystal_ball, df_af.time, df_af.signal, p0 = (1.25e-04, 1.08390763e-05, 1.12849285e+00, 9.04483335e+01, 2.08097853e-05, 6.07396123e-01, 1.31912331e+02, 2.96644947e-03, 3.20672825e-03))
-  x = np.linspace(0.1*10**(-3), 0.175*10**(-3), 1000)
+  par, cov = curve_fit(crystal_ball, df_af.time, df_af.signal, p0 = (-1.25e-04, 1.08390763e-05, 1.12849285e+00, 9.04483335e+01, 2.08097853e-05, 6.07396123e-01, 1.31912331e+02, 2.96644947e-03, 3.20672825e-03))
+  #x = np.linspace(0.1*10**(-3), 0.175*10**(-3), 1000) #120-129
+  x = np.linspace(-0.15*10**(-3), -0.1*10**(-3), 1000) #130-139
   y = crystal_ball(x, par[0], par[1], par[2], par[3], par[4], par[5], par[6], par[7], par[8])
 
   t_af = par[0]
