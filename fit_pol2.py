@@ -6,15 +6,19 @@ import time
 import glob
 import statistics as stat
 import os
+import sys
+
+argvs = sys.argv  
+argc = len(argvs) 
 
 peak = []
-delta_f_list = []
+f_shift_list = []
 Noise = 7.037*10**(-6)       # noise for df100-df168 [V]
 
 #f_file = 100
 #l_file = 119
-f_file = 120
-l_file = 129
+#f_file = 120
+#l_file = 129
 #f_file = 130
 #l_file = 139
 #f_file = 140
@@ -23,6 +27,14 @@ l_file = 129
 #l_file = 159
 #f_file = 161
 #l_file = 168
+#f_file = 178
+#l_file = 183
+#f_file = 184
+#l_file = 189
+#f_file = 190
+#l_file = 195
+f_file = 197
+l_file = 202
 file_path = [] #データのpathをしまうlist.""で囲まれた文字列のリストになる.
 for i in range(f_file, l_file+1):
     path = glob.glob("./WaveData/scope_%d.csv"% i)
@@ -38,16 +50,41 @@ dir_path = "./peak/%d-%d/pol2/"%(f_file, l_file)
 os.makedirs(dir_path, exist_ok=True)
 
 #range for tha data 100 to 129
-bf_xmin = 0.115*10**(-3)
-bf_xmax = 0.13*10**(-3)
-af_xmin = 0.118*10**(-3)
-af_xmax = 0.133*10**(-3)
+#bf_xmin = 0.115*10**(-3)
+#bf_xmax = 0.13*10**(-3)
+#af_xmin = 0.118*10**(-3)
+#af_xmax = 0.133*10**(-3)
 
 #range for tha data 130 to 168
 #bf_xmin = -0.135*10**(-3)
 #bf_xmax = -0.121*10**(-3)
 #af_xmin = -0.135*10**(-3)
 #af_xmax = -0.117*10**(-3)
+
+#range for tha data 178 to 183
+bf_xmin = 0.11*10**(-3)
+bf_xmax = 0.14*10**(-3)
+af_xmin = 0.1*10**(-3)
+af_xmax = 0.13*10**(-3)
+
+#range for tha data 184 to 189
+#bf_xmin = 0.12*10**(-3)
+#bf_xmax = 0.15*10**(-3)
+#af_xmin = 0.115*10**(-3)
+#af_xmax = 0.145*10**(-3)
+
+#range for tha data 190 to 195
+#bf_xmin = 0.13*10**(-3)
+#bf_xmax = 0.16*10**(-3)
+#af_xmin = 0.125*10**(-3)
+#af_xmax = 0.155*10**(-3)
+
+#range for tha data 190 to 195
+bf_xmin = 0.135*10**(-3)
+bf_xmax = 0.16*10**(-3)
+af_xmin = 0.125*10**(-3)
+af_xmax = 0.15*10**(-3)
+
 
 Nshift = int(len(file_path)/2)
 
@@ -98,22 +135,33 @@ for i in range(Nshift):
     gr_af.Draw("P")
     c.Update()
 
-    time.sleep(1000)
+    #time.sleep(1000)
 
     c.SaveAs(dir_path + str(2*i) + "-" + str(2*i+1) + ".png")
 
-    delta_t = peak[2*i+1]-peak[2*i]
+    t_shift = peak[2*i+1]-peak[2*i]
+    if t_shift < 0:
+        t_shift = -t_shift
     F_mod = 4001
-    F_dev = 500*10**3
-    delta_f = delta_t*F_mod*F_dev
-    delta_f_list.append(delta_f)
+    F_dev = 300*10**3
+    f_shift = t_shift*F_mod*F_dev
+    f_shift_list.append(f_shift)
+    
+    if argc == 2:
+        f=open(dir_path + argvs[1],"a")
+        f.write("%f\n" %(f_shift))
+        f.close()
     #print("delta_t = " + str(delta_t))
     #print("delta_f = " + str(delta_f))
 
-print(delta_f_list)
+if argc == 2:
+    f=open(dir_path + argvs[1],"a")
+    f.write("%f %f\n" %(stat.mean(f_shift_list), stat.stdev(f_shift_list)))
+    f.close()
+print(f_shift_list)
 
 c = ROOT.TCanvas("c", "title", 800, 600)
-gr = ROOT.TGraph(Nshift, np.linspace(1, Nshift, Nshift), np.array(delta_f_list))
+gr = ROOT.TGraph(Nshift, np.linspace(1, Nshift, Nshift), np.array(f_shift_list))
 gr.SetMarkerStyle(3)
 gr.SetMarkerSize(1)
 gr.GetXaxis().CenterTitle(True)
@@ -125,5 +173,5 @@ gr.Draw("AP")
 #c1 = ROOT.gROOT.FindObject("c1")
 c.Draw("same")
 c.SaveAs(dir_path + "EPR_Freq_Shift.png")
-print(stat.mean(delta_f_list))
-print(stat.stdev(delta_f_list))
+print(stat.mean(f_shift_list))
+print(stat.stdev(f_shift_list))
