@@ -33,8 +33,10 @@ Noise = 7.037*10**(-6)       # noise for df100-df168 [V]
 #l_file = 189
 #f_file = 190
 #l_file = 195
-f_file = 197
-l_file = 202
+#f_file = 197
+#l_file = 202
+f_file = 203
+l_file = 208
 file_path = [] #データのpathをしまうlist.""で囲まれた文字列のリストになる.
 for i in range(f_file, l_file+1):
     path = glob.glob("./WaveData/scope_%d.csv"% i)
@@ -79,7 +81,7 @@ af_xmax = 0.13*10**(-3)
 #af_xmin = 0.125*10**(-3)
 #af_xmax = 0.155*10**(-3)
 
-#range for tha data 190 to 195
+#range for tha data 190 to 208
 bf_xmin = 0.135*10**(-3)
 bf_xmax = 0.16*10**(-3)
 af_xmin = 0.125*10**(-3)
