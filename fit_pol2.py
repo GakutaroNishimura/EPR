@@ -33,12 +33,10 @@ Noise = 7.037*10**(-6)       # noise for df100-df168 [V]
 #l_file = 189
 #f_file = 190
 #l_file = 195
-f_file = 197
-l_file = 202
+#f_file = 197
+#l_file = 202
 f_file = 203
 l_file = 208
-f_file = 209
-l_file = 214
 file_path = [] #データのpathをしまうlist.""で囲まれた文字列のリストになる.
 for i in range(f_file, l_file+1):
     path = glob.glob("./WaveData/scope_%d.csv"% i)
