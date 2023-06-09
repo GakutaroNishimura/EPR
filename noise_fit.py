@@ -2,16 +2,20 @@ import pandas as pd
 import numpy as np
 import ROOT
 import time
+import os
 
 #df_noise = pd.read_csv("./WaveData/scope_67.csv", names = ["time", "signal", "monitor", "sync", "math"], skiprows = 2)
 #df_noise = pd.read_csv("./WaveData/scope_66.csv", names = ["time", "signal", "monitor", "sync", "math"], skiprows = 2)
-df_noise = pd.read_csv("./WaveData/scope_160.csv", names = ["time", "signal", "sync"], skiprows = 3)
+#df_noise = pd.read_csv("./WaveData/scope_160.csv", names = ["time", "signal", "sync"], skiprows = 3)
+df_noise = pd.read_csv("./WaveData/scope_196.csv", names = ["time", "signal", "sync", "sync2"], skiprows = 3)
 
 
 
 #path = "./peak/56-61/"
 #path = "./peak/36-55/"
-path = "./peak/100-119/"
+#path = "./peak/100-119/"
+path = "./peak/169-317/"
+os.makedirs(path, exist_ok=True)
 #gr = ROOT.TGraph(len(df_noise.time), np.array(df_noise.time), np.array(df_noise.signal))
 #gr.Draw("AP")
 #time.sleep(1000)
@@ -23,7 +27,9 @@ c2 = ROOT.TCanvas("c2","My Canvas",1600,900)
 #range for scope_66.csv
 #x_min, x_max, y_min, y_max = -0.006, 0.006, -0.001, 0.002
 #range for scope_160.csv
-x_min, x_max, y_min, y_max = -180*10**(-6), -60*10**(-6), 0.00224, 0.0023
+#x_min, x_max, y_min, y_max = -180*10**(-6), -60*10**(-6), 0.00224, 0.0023
+#range for scope_196.csv
+x_min, x_max, y_min, y_max = -50.0*10**(-6), 300*10**(-6), 0.0008, 0.0011
 
 c1.cd()
 

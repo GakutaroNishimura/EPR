@@ -13,34 +13,12 @@ argc = len(argvs)
 
 peak = []
 f_shift_list = []
-Noise = 7.037*10**(-6)       # noise for df100-df168 [V]
+#Noise = 7.037*10**(-6)       # noise for df100-df168 [V]
+Noise = 4.369*10**(-5)       # noise for df169-df317 [V]
 
-#f_file = 100
-#l_file = 119
-#f_file = 120
-#l_file = 129
-#f_file = 130
-#l_file = 139
-#f_file = 140
-#l_file = 149
-#f_file = 150
-#l_file = 159
-#f_file = 161
-#l_file = 168
-#f_file = 178
-#l_file = 183
-#f_file = 184
-#l_file = 189
-#f_file = 190
-#l_file = 195
-#f_file = 197
-#l_file = 202
-f_file = 203
-l_file = 208
-f_file = 209
-l_file = 214
-f_file = 215
-l_file = 218
+f_file = 174
+l_file = 177
+
 file_path = [] #データのpathをしまうlist.""で囲まれた文字列のリストになる.
 for i in range(f_file, l_file+1):
     path = glob.glob("./WaveData/scope_%d.csv"% i)
@@ -98,10 +76,10 @@ af_xmin = 0.095*10**(-3)
 af_xmax = 0.125*10**(-3)
 
 #range for tha data 215 to 218
-bf_xmin = 0.11*10**(-3)
-bf_xmax = 0.135*10**(-3)
-af_xmin = 0.105*10**(-3)
-af_xmax = 0.13*10**(-3)
+#bf_xmin = 0.11*10**(-3)
+#bf_xmax = 0.135*10**(-3)
+#af_xmin = 0.105*10**(-3)
+#af_xmax = 0.13*10**(-3)
 
 
 Nshift = int(len(file_path)/2)
@@ -176,7 +154,7 @@ if argc == 2:
     f=open(dir_path + argvs[1],"a")
     f.write("%f %f\n" %(stat.mean(f_shift_list), stat.stdev(f_shift_list)))
     f.close()
-print(f_shift_list)
+#print(f_shift_list)
 
 c = ROOT.TCanvas("c", "title", 800, 600)
 gr = ROOT.TGraph(Nshift, np.linspace(1, Nshift, Nshift), np.array(f_shift_list))
