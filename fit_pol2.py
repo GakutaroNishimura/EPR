@@ -13,69 +13,79 @@ argc = len(argvs)
 
 peak = []
 f_shift_list = []
-#Noise = 7.037*10**(-6)       # noise for df100-df168 [V]
-Noise = 4.369*10**(-5)       # noise for df169-df317 [V]
+Noise = 7.037*10**(-6)       # noise for df100-df168 [V]
+#Noise = 4.369*10**(-5)       # noise for df169-df317 [V]
 
-f_file = 174
-l_file = 177
+f_file = 120
+l_file = 129
 
 file_path = [] #データのpathをしまうlist.""で囲まれた文字列のリストになる.
 for i in range(f_file, l_file+1):
     path = glob.glob("./WaveData/scope_%d.csv"% i)
     file_path.append(path[0])
 
-#dir_path = "./peak/100-119/"
-#dir_path = "./peak/120-129/pol2/"
-#dir_path = "./peak/130-139/pol2/"
-#dir_path = "./peak/130-139/"
+
 dir_path = "./peak/%d-%d/pol2/"%(f_file, l_file)
-#dir_path = "./peak/%d-%d/"%(f_file, l_file)
 
 os.makedirs(dir_path, exist_ok=True)
 
-#range for tha data 100 to 129
-#bf_xmin = 0.115*10**(-3)
-#bf_xmax = 0.13*10**(-3)
-#af_xmin = 0.118*10**(-3)
-#af_xmax = 0.133*10**(-3)
+#range and FG setting for the data 100 to 129
+bf_xmin = 0.115*10**(-3)
+bf_xmax = 0.13*10**(-3)
+af_xmin = 0.118*10**(-3)
+af_xmax = 0.133*10**(-3)
+F_mod = 4001
+F_dev = 500*10**3
 
-#range for tha data 130 to 168
-#bf_xmin = -0.135*10**(-3)
-#bf_xmax = -0.121*10**(-3)
-#af_xmin = -0.135*10**(-3)
-#af_xmax = -0.117*10**(-3)
 
-#range for tha data 178 to 183
+
+"""
+#range for the data 130 to 168
+bf_xmin = -0.135*10**(-3)
+bf_xmax = -0.121*10**(-3)
+af_xmin = -0.135*10**(-3)
+af_xmax = -0.117*10**(-3)
+F_mod = 4001
+F_dev = 500*10**3
+"""
+
+#range for the data 178 to 183
 #bf_xmin = 0.11*10**(-3)
 #bf_xmax = 0.14*10**(-3)
 #af_xmin = 0.1*10**(-3)
 #af_xmax = 0.13*10**(-3)
 
-#range for tha data 184 to 189
+#range for the data 184 to 189
 #bf_xmin = 0.12*10**(-3)
-#bf_xmax = 0.15*10**(-3)
+#bf_xmax = 0.141*10**(-3)
 #af_xmin = 0.115*10**(-3)
+#af_xmax = 0.137*10**(-3)
+#F_mod = 4001
+#F_dev = 300*10**3
+
+#range for the data 190 to 202
+#bf_xmin = 0.135*10**(-3)
+#bf_xmax = 0.152*10**(-3)
+#af_xmin = 0.128*10**(-3)
 #af_xmax = 0.145*10**(-3)
+#F_mod = 4001
+#F_dev = 300*10**3
 
-#range for tha data 190 to 195
-#bf_xmin = 0.13*10**(-3)
-#bf_xmax = 0.16*10**(-3)
-#af_xmin = 0.125*10**(-3)
-#af_xmax = 0.155*10**(-3)
+#range for the data 203 to 208
+#bf_xmin = 0.132*10**(-3)
+#bf_xmax = 0.149*10**(-3)
+#af_xmin = 0.127*10**(-3)
+#af_xmax = 0.145*10**(-3)
+#F_mod = 4001
+#F_dev = 300*10**3
 
-#range for tha data 196 to 208
-bf_xmin = 0.135*10**(-3)
-bf_xmax = 0.16*10**(-3)
-af_xmin = 0.125*10**(-3)
-af_xmax = 0.15*10**(-3)
+#range for the data 209 to 214
+#bf_xmin = 0.1*10**(-3)
+#bf_xmax = 0.13*10**(-3)
+#af_xmin = 0.095*10**(-3)
+#af_xmax = 0.125*10**(-3)
 
-#range for tha data 209 to 214
-bf_xmin = 0.1*10**(-3)
-bf_xmax = 0.13*10**(-3)
-af_xmin = 0.095*10**(-3)
-af_xmax = 0.125*10**(-3)
-
-#range for tha data 215 to 218
+#range for the data 215 to 218
 #bf_xmin = 0.11*10**(-3)
 #bf_xmax = 0.135*10**(-3)
 #af_xmin = 0.105*10**(-3)
@@ -130,7 +140,7 @@ for i in range(Nshift):
     c.Draw("P")
     gr_af.Draw("P")
     c.Update()
-
+    
     #time.sleep(1000)
 
     c.SaveAs(dir_path + str(2*i) + "-" + str(2*i+1) + ".png")
@@ -138,8 +148,6 @@ for i in range(Nshift):
     t_shift = peak[2*i+1]-peak[2*i]
     if t_shift < 0:
         t_shift = -t_shift
-    F_mod = 4001
-    F_dev = 300*10**3
     f_shift = t_shift*F_mod*F_dev
     f_shift_list.append(f_shift)
     
@@ -164,10 +172,12 @@ gr.GetXaxis().CenterTitle(True)
 gr.GetXaxis().SetTitle("number of measurment")
 gr.GetYaxis().CenterTitle(True)
 gr.GetYaxis().SetTitle("EPR freq. shift [Hz]")
+gr.GetYaxis().SetRangeUser(0, 7000)
 #ROOT.gStyle.SetOptFit(1)
 gr.Draw("AP")
 #c1 = ROOT.gROOT.FindObject("c1")
 c.Draw("same")
 c.SaveAs(dir_path + "EPR_Freq_Shift.png")
+time.sleep(1000)
 print(stat.mean(f_shift_list))
 print(stat.stdev(f_shift_list))
