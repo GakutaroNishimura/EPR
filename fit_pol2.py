@@ -141,7 +141,7 @@ for i in range(Nshift):
     gr_af.Draw("P")
     c.Update()
     
-    #time.sleep(1000)
+    time.sleep(1000)
 
     c.SaveAs(dir_path + str(2*i) + "-" + str(2*i+1) + ".png")
 
