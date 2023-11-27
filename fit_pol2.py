@@ -16,8 +16,8 @@ f_shift_list = []
 Noise = 7.037*10**(-6)       # noise for df100-df168 [V]
 #Noise = 4.369*10**(-5)       # noise for df169-df317 [V]
 
-f_file = 120
-l_file = 129
+f_file = 323
+l_file = 332
 
 file_path = [] #データのpathをしまうlist.""で囲まれた文字列のリストになる.
 for i in range(f_file, l_file+1):
@@ -30,12 +30,12 @@ dir_path = "./peak/%d-%d/pol2/"%(f_file, l_file)
 os.makedirs(dir_path, exist_ok=True)
 
 #range and FG setting for the data 100 to 129
-bf_xmin = 0.115*10**(-3)
-bf_xmax = 0.13*10**(-3)
-af_xmin = 0.118*10**(-3)
-af_xmax = 0.133*10**(-3)
-F_mod = 4001
-F_dev = 500*10**3
+#bf_xmin = 0.115*10**(-3)
+#bf_xmax = 0.13*10**(-3)
+#af_xmin = 0.118*10**(-3)
+#af_xmax = 0.133*10**(-3)
+#F_mod = 4001
+#F_dev = 500*10**3
 
 
 
@@ -90,6 +90,14 @@ F_dev = 500*10**3
 #bf_xmax = 0.135*10**(-3)
 #af_xmin = 0.105*10**(-3)
 #af_xmax = 0.13*10**(-3)
+
+#range for the data 323 to 332
+bf_xmin = 0.09*10**(-3)
+bf_xmax = 0.125*10**(-3)
+af_xmin = 0.095*10**(-3)
+af_xmax = 0.125*10**(-3)
+F_mod = 4001
+F_dev = 200*10**3
 
 
 Nshift = int(len(file_path)/2)
@@ -178,6 +186,6 @@ gr.Draw("AP")
 #c1 = ROOT.gROOT.FindObject("c1")
 c.Draw("same")
 c.SaveAs(dir_path + "EPR_Freq_Shift.png")
-time.sleep(1000)
+#time.sleep(1000)
 print(stat.mean(f_shift_list))
 print(stat.stdev(f_shift_list))
