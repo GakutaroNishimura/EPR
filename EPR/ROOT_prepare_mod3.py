@@ -6,19 +6,22 @@ import glob
 
 
 #path = "./peak/56-61/"
-dir_path = "./peak/36-55/test/"
+#dir_path = "./peak/36-55/test/"
+dir_path = "./peak/36-55/SkewedGaus/"
+dir_path = "./peak/56-61/SkewedGaus/"
 
 # 読み込むファイルの番号（scope_〇〇.csv）の番号を指定.first_file(f_file)からlast_file(l_file)まで.
 # Nfile_bfで保存するファイル名を変える.
-f_file = 36
-l_file = 55
-Nfile_bf = 10
-file_path = [] #データのpathｗｐしまうlist.""で囲まれた文字列のリストになる.
+f_file = 56
+l_file = 61
+Nfile_bf = 3
+Npeak = 2
+file_path = [] #データのpathをしまうlist.""で囲まれた文字列のリストになる.
 for i in range(f_file, l_file+1):
     path = glob.glob("./WaveData/scope_%d.csv"% i)
     file_path.append(path[0])
 
-
+Save = "notSAVE"
 peak = []
 peak_e = []
 peak_ideal = []
@@ -27,15 +30,15 @@ EPR_freq_list = []
 F_mod = 1000    # modulation freq [Hz]
 F_dev = 700     # deviation freq. [kHz]
 F_0 = 7225      # 変調磁場の中心周波数 [kHz]
-Npeak = 10      # 一回で取得するピークの数
-Fit_Range = 0.0001      # ピークをフィットするときの横軸の幅
+      # 一回で取得するピークの数
+Fit_Range = 0.0001*4      # ピークをフィットするときの横軸の幅
 canvasWidth = 600
 canvasHeight = 300
 
 # noise_fit.pyで得た、sweep磁場がないときのsignalのノイズ.
 # averageの回数で大きさが変わる.
-#Noise = 0.0001097      # noise for df56-df61 [V]
-Noise = 0.0003883       # noise for df36-df55 [V]
+Noise = 0.0001097      # noise for df56-df61 [V]
+#Noise = 0.0003883       # noise for df36-df55 [V]
 
 
 # 前ピークを一個ずつフィット.
@@ -44,21 +47,39 @@ for j in range(len(file_path)):
     df = pd.read_csv(file_path[j], names = ["time", "signal", "sync"], skiprows = 2)
     for i in range(Npeak):
         Fit_center = 0.000533512052921227-Npeak/2/F_mod+i/F_mod
+        print("Fit_center = " + str(Fit_center))
         # create a TGraph with the data
         gr = ROOT.TGraphErrors(len(df.time), np.array(df.time), np.array(df.signal), np.array([0.0 for i in range(len(df.time))]), np.array([Noise for i in range(len(df.time))]))
         # set the fit function and the fit range
-        f = ROOT.TF1("f", "[0]-gaus(x, [1], [2], [3])", Fit_center-Fit_Range, Fit_center+Fit_Range)
+        
+        #f = ROOT.TF1("f", "[3]-gaus(x,[0],[1],[2])*ROOT::Math::normal_cdf(x,[4],[5])", Fit_center-Fit_Range, Fit_center+Fit_Range) #フィットは合うけどピークの位置とパラメータの関係がわからない.
+        #f.SetParameters(0.004061, Fit_center, 7.449*10**(-5), -0.0006041, 7.449*10**(-5), Fit_center) #par for the 36-55, normal_cdf
+        
+        #f = ROOT.TF1("f", "[3]-gaus(x,[0],[1],[2])*ROOT::Math::normal_cdf([4]*x, 1, 0)", Fit_center-Fit_Range, Fit_center+Fit_Range)
+        #f.SetParameters(0.003598, Fit_center, 6.413*10**(-5), 0.0006041, -21) #par for the 56-61, normal_cdf
+        
+        f = ROOT.TF1("f", "[3] - gaus(x,[0],[1],[2]) + [4]*expo((x-[1])/[5])*TMath::Erfc((x-[1])/(TMath::Sqrt2()*[2])-[2]/(TMath::Sqrt2()*[5]))", Fit_center-Fit_Range, Fit_center+Fit_Range)
+        f.SetParameters(0.003598, Fit_center, 6.413*10**(-5), 0.0006041, 1, 1) #par for the 56-61, Takada San's skewed gaus
+        
+        #f = ROOT.TF1("f", "[3] - gaus(x,[0],[1],[2]) + [4]*expo((x-[1])/[5])*TMath::Erfc((x-[1])/(TMath::Sqrt2()*[2])-[2]/(TMath::Sqrt2()*[5])) + [6]*TMath::Erfc((x-[1])/(TMath::Sqrt2()*[2]))", Fit_center-Fit_Range, Fit_center+Fit_Range)
+        #f.SetParameters(0.003598, Fit_center, 6.413*10**(-5), 0.0006041, 1, 1, 1) #par for the 56-61, Takada San's skewed gaus
+        
+        #f = ROOT.TF1("f", "[3]-gaus(x,[0],[1],[2])*ROOT::Math::normal_cdf(x,[2],[1])", Fit_center-Fit_Range, Fit_center+Fit_Range)        
         # set initial parameter values for the fit
-        f.SetParameters(0, 0.003, Fit_center, 6*10**(-5))
+        
+        
+        
+        #f.SetParameters(0.003, Fit_center, 0.0001, 0.0006041) #par for the 56-61
         # perform the fit
         gr.Fit(f, "QR")
         # get the fitted parameters
         par = [f.GetParameter(k) for k in range(f.GetNpar())]
         par_e = [f.GetParError(k) for k in range(f.GetNpar())]
-        peak.append(par[2])
-        peak_e.append(par_e[2])
+        peak.append(par[1])
+        peak_e.append(par_e[1])
+        print(par)
         # create a TGraph with the fitted function
-        gr_fit = ROOT.TGraph(1000, np.linspace(Fit_center-Fit_Range, Fit_center+Fit_Range, 1000), np.array([f.Eval(x, *par[1:]) for x in np.linspace(Fit_center-Fit_Range, Fit_center+Fit_Range, 1000)]))
+        #gr_fit = ROOT.TGraph(1000, np.linspace(Fit_center-Fit_Range, Fit_center+Fit_Range, 1000), np.array([f.Eval(x, *par[1:]) for x in np.linspace(Fit_center-Fit_Range, Fit_center+Fit_Range, 1000)]))
         gr.SetMarkerStyle(1)
         gr.SetMarkerSize(2)
         gr.SetName("a")
@@ -67,18 +88,22 @@ for j in range(len(file_path)):
         gr.GetYaxis().CenterTitle(True)
         gr.GetYaxis().SetTitle("voltage [V]")
         gr.Draw("AP")
-        gr_fit.Draw("same")
-        gr_fit.SetLineColor(2)
+        #gr_fit.Draw("same")
+        #gr_fit.SetLineColor(2)
         ROOT.gStyle.SetOptFit(1)    #グラフに統計ボックスを表示.
         c1 = ROOT.gROOT.FindObject("c1")
-        if j < Nfile_bf:
-            c1.SaveAs(dir_path + "e_bf" + str(j) + "_peak" +  str(i) + ".pdf")
-            c1.SaveAs(dir_path + "e_bf" + str(j) + "_peak" +  str(i) + ".png")
-        else:
-            c1.SaveAs(dir_path + "e_af" + str(j-10) + "_peak" +  str(i) + ".pdf")
-            c1.SaveAs(dir_path + "e_af" + str(j-10) + "_peak" +  str(i) + ".png")
-        #time.sleep(10000)
-    
+        c1.Draw("AP")
+        gr.Draw("same")
+        c1.Update()
+        if Save == "SAVE":
+            if j < Nfile_bf:
+                c1.SaveAs(dir_path + "e_bf" + str(j) + "_peak" +  str(i) + ".pdf")
+                c1.SaveAs(dir_path + "e_bf" + str(j) + "_peak" +  str(i) + ".png")
+            else:
+                c1.SaveAs(dir_path + "e_af" + str(j-10) + "_peak" +  str(i) + ".pdf")
+                c1.SaveAs(dir_path + "e_af" + str(j-10) + "_peak" +  str(i) + ".png")
+        if i == 0:
+            time.sleep(10000)
         
 
 # 一つのピークの時刻から、他のピークの時刻を求める.
