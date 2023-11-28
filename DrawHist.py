@@ -3,6 +3,7 @@ import math
 import sys
 from array import array
 import time
+import os
 
 argvs = sys.argv  
 argc = len(argvs)
@@ -155,41 +156,9 @@ if __name__ == '__main__':
     ROOT.gPad.SetBottomMargin(0.14)
     ROOT.gPad.SetLeftMargin(0.15)
     ROOT.gPad.SetRightMargin(0.05)
-    files = argvs[1]
-    #c.SaveAs(fig_path + files + ".pdf")
-    #g.GetYaxis().SetRangeUser(9200e3,9250e3)
-    #g.GetYaxis().SetRangeUser(8.860e6,8.890e6)
-    #g.GetYaxis().SetRangeUser(13700e3,13760e3)
-    #g.GetYaxis().SetRangeUser(9210e3,9260e3)
-
-    #print(CalPol(10.88e3, 181, 3))
-    #print("Polarization %f "%(CalPol(16.14e3/2, 181, 3)))
-    #print("Polarization %f "%(CalPol(21.96e3/2, 181, 3)))
-    """s
-    c.cd(2)
-    gIB=ROOT.TGraph(int(Npoint), ta, IBa)
-    gIB.Draw("AP")
-    gIB.SetMarkerStyle(2)
-    gIB.GetYaxis().SetRangeUser(0.835,0.8362)
-
-    #hVdown=ROOT.TH1F("Vdown","Vdown",300,9210e3,9250e3)
-    #hVup=ROOT.TH1F("Vup","Vup",300,9210e3,9250e3)
-    hVdown=ROOT.TH1F("Vdown","Vdown",300,13705e3,13740e3)
-    hVup=ROOT.TH1F("Vup","Vup",300,13705e3,13740e3)
-    for x in Vdowna:
-        hVdown.Fill(x)
-    for x in Vupa:
-        hVup.Fill(x)
-    c.cd(3)
-    ROOT.gStyle.SetOptStat("RMe")
-    ROOT.gStyle.SetStatFormat("6.8g");
-    hVup.Draw()
-    c.Update()
-    c.cd(4)
-    ROOT.gStyle.SetOptStat("RMe")
-    ROOT.gStyle.SetStatFormat("6.8g");
-    hVdown.Draw()
-    """
+    file_name = argvs[1]
+    file, ext = os.path.splitext(file_name)
+    #c.SaveAs(fig_path + file + ".pdf")
     c.Update()
     
     
