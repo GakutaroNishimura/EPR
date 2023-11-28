@@ -71,6 +71,7 @@ for j in range(len(file_path)):
         gr_fit.SetLineColor(2)
         ROOT.gStyle.SetOptFit(1)    #グラフに統計ボックスを表示.
         c1 = ROOT.gROOT.FindObject("c1")
+        time.sleep(10000)
         if j < Nfile_bf:
             c1.SaveAs(dir_path + "e_bf" + str(j) + "_peak" +  str(i) + ".pdf")
             c1.SaveAs(dir_path + "e_bf" + str(j) + "_peak" +  str(i) + ".png")
