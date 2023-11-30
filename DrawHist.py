@@ -158,7 +158,7 @@ if __name__ == '__main__':
     ROOT.gPad.SetRightMargin(0.05)
     file_name = argvs[1]
     file, ext = os.path.splitext(file_name)
-    #c.SaveAs(fig_path + file + ".pdf")
+    c.SaveAs(fig_path + file + ".png")
     c.Update()
     
     
