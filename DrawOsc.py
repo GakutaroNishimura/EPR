@@ -7,7 +7,7 @@ df_freq = pd.read_table("./FreqValue/FreqValue20230428_1.txt", names=["f_0", "f_
 
 dfF = df_freq.f_0
 
-set = 0
+set = 2
 
 Start = 960*set
 DataN = 960*(set+1)-1
@@ -32,11 +32,11 @@ LockinError = np.sqrt(LockindfError.sum())/(0.001871)
 
 Henka=Lockin*15
 #Henka=Lockin*factor
-HenkaError = LockinError
+HenkaError = LockinError*15
 #HenkaError = np.sqrt(2)*factor*LockinError
 DeltaF = dfF[set+1]-dfF[set]
 
-#"""
+"""
 if(Henka<0):
     Henka=Henka/4
 
@@ -48,7 +48,7 @@ if(abs(Henka)>1e4):
 if(abs(Henka)>1e3):
     Henka=Henka/10
     HenkaError=HenkaError/10
-#"""
+"""
 
 #Henka = Henka/DeltaF
 
