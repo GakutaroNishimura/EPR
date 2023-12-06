@@ -13,11 +13,11 @@ argc = len(argvs)
 
 peak = []
 f_shift_list = []
-Noise = 7.037*10**(-6)       # noise for df100-df168 [V]
-#Noise = 4.369*10**(-5)       # noise for df169-df317 [V]
+# Noise = 7.037*10**(-6)       # noise for df100-df168 [V]
+Noise = 4.369*10**(-5)       # noise for df169-df317 [V]
 
-f_file = 323
-l_file = 332
+f_file = 178
+l_file = 183
 
 file_path = [] #データのpathをしまうlist.""で囲まれた文字列のリストになる.
 for i in range(f_file, l_file+1):
@@ -50,10 +50,12 @@ F_dev = 500*10**3
 """
 
 #range for the data 178 to 183
-#bf_xmin = 0.11*10**(-3)
-#bf_xmax = 0.14*10**(-3)
-#af_xmin = 0.1*10**(-3)
-#af_xmax = 0.13*10**(-3)
+bf_xmin = 0.11*10**(-3)
+bf_xmax = 0.14*10**(-3)
+af_xmin = 0.1*10**(-3)
+af_xmax = 0.13*10**(-3)
+F_mod = 4001
+F_dev = 300*10**3
 
 #range for the data 184 to 189
 #bf_xmin = 0.12*10**(-3)
@@ -92,12 +94,12 @@ F_dev = 500*10**3
 #af_xmax = 0.13*10**(-3)
 
 #range for the data 323 to 332
-bf_xmin = 0.09*10**(-3)
-bf_xmax = 0.125*10**(-3)
-af_xmin = 0.095*10**(-3)
-af_xmax = 0.125*10**(-3)
-F_mod = 4001
-F_dev = 200*10**3
+# bf_xmin = 0.09*10**(-3)
+# bf_xmax = 0.125*10**(-3)
+# af_xmin = 0.095*10**(-3)
+# af_xmax = 0.125*10**(-3)
+# F_mod = 4001
+# F_dev = 200*10**3
 
 
 Nshift = int(len(file_path)/2)
@@ -106,12 +108,16 @@ for i in range(Nshift):
     df_bf = pd.read_csv(file_path[2*i], names = ["time", "signal", "sync"], skiprows=3)
     df_af = pd.read_csv(file_path[2*i+1], names = ["time", "signal", "sync"], skiprows=3)
 
-    c = ROOT.TCanvas("c", "title", 800, 1200)
+    c = ROOT.TCanvas("c", "title", 900, 600)
     c.Divide(1,2)
 
     c.cd(1)
     gr_bf = ROOT.TGraphErrors(len(df_bf.time), np.array(df_bf.time), np.array(df_bf.signal), np.array([0.0 for i in range(len(df_bf.time))]), np.array([Noise for i in range(len(df_bf.time))]))
-
+    gr_bf.SetTitle("dip before spin flip")
+    gr_bf.GetXaxis().SetTitle("time [s]")
+    gr_bf.GetYaxis().SetTitle("voltage [V]")
+    gr_bf.GetXaxis().SetTitleSize(1.0)
+    gr_bf.GetYaxis().SetTitle("voltage [V]")
     bf_fit = ROOT.TF1("f", "pol2", bf_xmin, bf_xmax)
     gr_bf.Fit(bf_fit, "QR")
     #min = bf_fit.GetMinimumX(bf_xmin, bf_xmax)
@@ -132,6 +138,9 @@ for i in range(Nshift):
     c.cd(2)
 
     gr_af = ROOT.TGraphErrors(len(df_af.time), np.array(df_af.time), np.array(df_af.signal), np.array([0.0 for i in range(len(df_bf.time))]), np.array([Noise for i in range(len(df_bf.time))]))
+    gr_af.SetTitle("dip after spin flip")
+    gr_af.GetXaxis().SetTitle("time [s]")
+    gr_af.GetYaxis().SetTitle("voltage [V]")
     af_fit = ROOT.TF1("f", "pol2", af_xmin, af_xmax)
     gr_af.Fit(af_fit, "QR")
     #min = af_fit.GetMinimumX(af_xmin, af_xmax)
@@ -149,7 +158,7 @@ for i in range(Nshift):
     gr_af.Draw("P")
     c.Update()
     
-    time.sleep(1000)
+    #time.sleep(1000)
 
     c.SaveAs(dir_path + str(2*i) + "-" + str(2*i+1) + ".png")
 
@@ -180,7 +189,7 @@ gr.GetXaxis().CenterTitle(True)
 gr.GetXaxis().SetTitle("number of measurment")
 gr.GetYaxis().CenterTitle(True)
 gr.GetYaxis().SetTitle("EPR freq. shift [Hz]")
-gr.GetYaxis().SetRangeUser(0, 7000)
+gr.GetYaxis().SetRangeUser(0, 7500)
 #ROOT.gStyle.SetOptFit(1)
 gr.Draw("AP")
 #c1 = ROOT.gROOT.FindObject("c1")
