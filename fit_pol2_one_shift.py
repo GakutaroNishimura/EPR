@@ -16,24 +16,26 @@ f_shift_list = []
 Noise = 7.037*10**(-6)       # noise for df100-df168 [V]
 # Noise = 4.369*10**(-5)       # noise for df169-df317 [V]
 
-f_file = 120
-l_file = 121
+f_file = 320
+l_file = 322
 
-file_path = [] #データのpathをしまうlist.""で囲まれた文字列のリストになる.
-for i in range(f_file, l_file+1):
-    path = glob.glob("./WaveData/scope_%d.csv"% i)
-    file_path.append(path[0])
+file_path = ["./WaveData/scope_" + str(f_file) + ".csv", "./WaveData/scope_" + str(l_file) + ".csv"]
+
+# file_path = [] #データのpathをしまうlist.""で囲まれた文字列のリストになる.
+# for i in range(f_file, l_file+1):
+#     path = glob.glob("./WaveData/scope_%d.csv"% i)
+#     file_path.append(path[0])
 
 
-dir_path = "./peak/%d-%d/pol2/"%(f_file, l_file)
+#dir_path = "./peak/%d-%d/pol2/"%(f_file, l_file)
 
-os.makedirs(dir_path, exist_ok=True)
+# os.makedirs(dir_path, exist_ok=True)
 
 #range and FG setting for the data 100 to 129
-bf_xmin = 0.115*10**(-3)
-bf_xmax = 0.13*10**(-3)
-af_xmin = 0.118*10**(-3)
-af_xmax = 0.133*10**(-3)
+# bf_xmin = 0.115*10**(-3)
+# bf_xmax = 0.13*10**(-3)
+# af_xmin = 0.118*10**(-3)
+# af_xmax = 0.133*10**(-3)
 F_mod = 4001
 F_dev = 500*10**3
 
@@ -87,11 +89,11 @@ F_dev = 500*10**3
 #af_xmin = 0.095*10**(-3)
 #af_xmax = 0.125*10**(-3)
 
-#range for the data 215 to 218
-#bf_xmin = 0.11*10**(-3)
-#bf_xmax = 0.135*10**(-3)
-#af_xmin = 0.105*10**(-3)
-#af_xmax = 0.13*10**(-3)
+#range for the data 215 to 218 and 320, 322
+bf_xmin = 0.11*10**(-3)
+bf_xmax = 0.135*10**(-3)
+af_xmin = 0.105*10**(-3)
+af_xmax = 0.13*10**(-3)
 
 #range for the data 323 to 332
 # bf_xmin = 0.09*10**(-3)
@@ -102,12 +104,13 @@ F_dev = 500*10**3
 # F_dev = 200*10**3
 
 
-Nshift = int(len(file_path)/2)
+# Nshift = int(len(file_path)/2)
 
 i = 0
 
 df_bf = pd.read_csv(file_path[2*i], names = ["time", "signal", "sync"], skiprows=3)
 df_af = pd.read_csv(file_path[2*i+1], names = ["time", "signal", "sync"], skiprows=3)
+
 
 c = ROOT.TCanvas("c", "title", 900, 600)
 c.Divide(1,2)
@@ -181,7 +184,7 @@ c.Update()
 
 #time.sleep(1000)
 
-c.SaveAs(dir_path + str(2*i) + "-" + str(2*i+1) + ".png")
+#c.SaveAs(dir_path + str(2*i) + "-" + str(2*i+1) + ".png")
 
 t_shift = peak[2*i+1]-peak[2*i]
 if t_shift < 0:

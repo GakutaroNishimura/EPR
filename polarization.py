@@ -19,8 +19,8 @@ I = 5/2
 A = 1.01191*10**9                #[s^-1]
 He_num = 2.68678*3.0*10**25      #[m^-3]
 Xe_num_129_enrich = 5.88*10**3*6.02*10**23/131.3           #[m^-3]、1atm.
-Xe_num_129_nat = 0.264*5.88*10**3*6.02*10**23/131.3         # 3 atm.
-Xe_num_131 = 0.212*5.88*10**3*6.02*10**23/131.3           #[m^-3]
+Xe_num_129_nat = 0.264*3*5.88*10**3*6.02*10**23/131.3         # 3 atm.
+Xe_num_131 = 0.212*3*5.88*10**3*6.02*10**23/131.3           #[m^-3]
 B = 1.5*10**(-3)                 #[T]
 kappa_Xe = 518
 kappa_He = 4.52+0.00934*T
@@ -42,8 +42,8 @@ def EPRshift(bfs, bff, afs, aff):
 
 
 def CalPolXe(delta_EPR, delta_EPR_std):
-    abs_Pol = 100*delta_EPR/(2*(2*mu_0/3)*(mu_B*g_e/(h*(2*I+1)))*(1-(8*I/(2*I+1)**2)*(mu_B*g_e*B/(h*A)))*kappa_Xe*mu_Xe_129*Xe_num_129_enrich)
-    abs_Pol_std = 100*delta_EPR_std/(2*(2*mu_0/3)*(mu_B*g_e/(h*(2*I+1)))*(1-(8*I/(2*I+1)**2)*(mu_B*g_e*B/(h*A)))*kappa_Xe*mu_Xe_129*Xe_num_129_enrich)
+    abs_Pol = 100*delta_EPR/(2*(2*mu_0/3)*(mu_B*g_e/(h*(2*I+1)))*(1-(8*I/(2*I+1)**2)*(mu_B*g_e*B/(h*A)))*kappa_Xe*mu_Xe_129*Xe_num_129_nat)
+    abs_Pol_std = 100*delta_EPR_std/(2*(2*mu_0/3)*(mu_B*g_e/(h*(2*I+1)))*(1-(8*I/(2*I+1)**2)*(mu_B*g_e*B/(h*A)))*kappa_Xe*mu_Xe_129*Xe_num_129_nat)
 
     return abs_Pol, abs_Pol_std
 
