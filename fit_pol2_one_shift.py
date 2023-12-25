@@ -16,8 +16,8 @@ f_shift_list = []
 Noise = 7.037*10**(-6)       # noise for df100-df168 [V]
 # Noise = 4.369*10**(-5)       # noise for df169-df317 [V]
 
-f_file = 320
-l_file = 322
+f_file = 130
+l_file = 131
 
 file_path = ["./WaveData/scope_" + str(f_file) + ".csv", "./WaveData/scope_" + str(l_file) + ".csv"]
 
@@ -41,7 +41,7 @@ F_dev = 500*10**3
 
 
 
-"""
+# """
 #range for the data 130 to 168
 bf_xmin = -0.135*10**(-3)
 bf_xmax = -0.121*10**(-3)
@@ -49,7 +49,7 @@ af_xmin = -0.135*10**(-3)
 af_xmax = -0.117*10**(-3)
 F_mod = 4001
 F_dev = 500*10**3
-"""
+# """
 
 #range for the data 178 to 183
 # bf_xmin = 0.11*10**(-3)
@@ -90,10 +90,10 @@ F_dev = 500*10**3
 #af_xmax = 0.125*10**(-3)
 
 #range for the data 215 to 218 and 320, 322
-bf_xmin = 0.11*10**(-3)
-bf_xmax = 0.135*10**(-3)
-af_xmin = 0.105*10**(-3)
-af_xmax = 0.13*10**(-3)
+# bf_xmin = 0.11*10**(-3)
+# bf_xmax = 0.135*10**(-3)
+# af_xmin = 0.105*10**(-3)
+# af_xmax = 0.13*10**(-3)
 
 #range for the data 323 to 332
 # bf_xmin = 0.09*10**(-3)
