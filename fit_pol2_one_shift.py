@@ -12,12 +12,13 @@ argvs = sys.argv
 argc = len(argvs) 
 
 peak = []
+peakE = []
 f_shift_list = []
-Noise = 7.037*10**(-6)       # noise for df100-df168 [V]
-# Noise = 4.369*10**(-5)       # noise for df169-df317 [V]
+# Noise = 7.037*10**(-6)       # noise for df100-df168 [V]
+Noise = 4.369*10**(-5)       # noise for df169-df317 [V]
 
-f_file = 130
-l_file = 131
+f_file = 320
+l_file = 322
 
 file_path = ["./WaveData/scope_" + str(f_file) + ".csv", "./WaveData/scope_" + str(l_file) + ".csv"]
 
@@ -43,10 +44,10 @@ F_dev = 500*10**3
 
 # """
 #range for the data 130 to 168
-bf_xmin = -0.135*10**(-3)
-bf_xmax = -0.121*10**(-3)
-af_xmin = -0.135*10**(-3)
-af_xmax = -0.117*10**(-3)
+# bf_xmin = -0.135*10**(-3)
+# bf_xmax = -0.121*10**(-3)
+# af_xmin = -0.135*10**(-3)
+# af_xmax = -0.117*10**(-3)
 F_mod = 4001
 F_dev = 500*10**3
 # """
@@ -90,10 +91,10 @@ F_dev = 500*10**3
 #af_xmax = 0.125*10**(-3)
 
 #range for the data 215 to 218 and 320, 322
-# bf_xmin = 0.11*10**(-3)
-# bf_xmax = 0.135*10**(-3)
-# af_xmin = 0.105*10**(-3)
-# af_xmax = 0.13*10**(-3)
+bf_xmin = 0.11*10**(-3)
+bf_xmax = 0.135*10**(-3)
+af_xmin = 0.105*10**(-3)
+af_xmax = 0.13*10**(-3)
 
 #range for the data 323 to 332
 # bf_xmin = 0.09*10**(-3)
@@ -132,8 +133,11 @@ gr_bf.Fit(bf_fit, "QR")
 #min = bf_fit.GetMinimumX(bf_xmin, bf_xmax)
 #print(min)
 par = [bf_fit.GetParameter(k) for k in range(bf_fit.GetNpar())]
+parE = [bf_fit.GetParError(k) for k in range(bf_fit.GetNpar())]
 x0 = -par[1]/(2*par[2])
+x0E = np.sqrt((parE[1]/(2*par[2]))**2 + (par[1]*parE[2]/(4*par[2]**2))**2)
 peak.append(x0)
+peakE.append(x0E)
 #peak.append(min)
 #print(peak)
 gr_bf.Draw("AP")
@@ -166,8 +170,11 @@ gr_af.Fit(af_fit, "QR")
 #min = af_fit.GetMinimumX(af_xmin, af_xmax)
 #print(min)
 par = [af_fit.GetParameter(k) for k in range(af_fit.GetNpar())]
+parE = [bf_fit.GetParError(k) for k in range(bf_fit.GetNpar())]
 x0 = -par[1]/(2*par[2])
+x0E = np.sqrt((parE[1]/(2*par[2]))**2 + (par[1]*parE[2]/(4*par[2]**2))**2)
 peak.append(x0)
+peakE.append(x0E)
 #peak.append(min)
 #print(peak)
 gr_af.Draw("AP")
@@ -187,8 +194,9 @@ c.Update()
 #c.SaveAs(dir_path + str(2*i) + "-" + str(2*i+1) + ".png")
 
 t_shift = peak[2*i+1]-peak[2*i]
+t_shiftE = np.sqrt(peakE[2*i+1]**2+peakE[2*i]**2)
 if t_shift < 0:
     t_shift = -t_shift
 f_shift = t_shift*F_mod*F_dev
 f_shift_list.append(f_shift)
-print(f_shift_list)
+print(f_shift, t_shiftE)
